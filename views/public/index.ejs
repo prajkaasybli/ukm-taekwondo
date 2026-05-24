@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - TAVEJA</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Icon -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    /* Warna Hijau Gelap */
+    .bg-dark-green { background-color: #064e3b; }
+    .text-dark-green { color: #064e3b; }
+    
+    /* ✅ HERO SECTION DENGAN BACKGROUND FOTO TRANSPARAN */
+    .hero-section {
+      position: relative;
+      background-color: #064e3b;
+      color: white;
+      padding: 120px 0;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* Overlay gambar transparan */
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('/uploads/foto-grup.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.30; /* Atur transparansi: 0.05-0.30 */
+      z-index: 0;
+    }
+
+    /* Pastikan teks & tombol di atas gambar */
+    .hero-section > .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .kegiatan-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .kegiatan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+            <img src="/uploads/logo-taveja.png" alt="Logo TAVEJA" height="40" class="me-2"> 
+            TAVEJA
+        </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/anggota">Anggota</a></li>
+          <li class="nav-item"><a class="nav-link" href="/jadwal">Jadwal</a></li>
+          <li class="nav-item"><a class="nav-link" href="/kegiatan">Kegiatan</a></li>
+          <li class="nav-item"><a class="nav-link" href="/prestasi">Prestasi</a></li>
+          
+          <!-- MENU ANGGOTA (Login/Logout) -->
+          <li class="nav-item ms-2">
+            <% if (typeof user !== 'undefined' && user.isLoggedIn) { %>
+              <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle btn-sm" type="button" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-circle me-1"></i><%= user.anggotaNama %>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="/kegiatan">Kegiatan</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-danger" href="/anggota/logout">Logout</a></li>
+                </ul>
+              </div>
+            <% } else { %>
+              <a href="/anggota/login" class="btn btn-light text-success btn-sm fw-bold">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login Anggota
+              </a>
+            <% } %>
+          </li>
+          
+          <!-- Login Admin -->
+          <li class="nav-item ms-2">
+            <a href="/admin/login" class="btn btn-outline-light btn-sm">Login Admin</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ✅ Hero Section dengan Background Foto Transparan -->
+  <section class="hero-section">
+    <div class="container">
+      <h1 class="display-4 fw-bold mb-3">TAEKWONDO VETERAN JAKARTA</h1>
+      <p class="lead mb-4">Selamat Datang di Website TAVEJA</p>
+      <a href="/daftar/form" class="btn btn-light btn-lg me-2 fw-bold text-dark-green">Daftar Anggota</a>
+      <a href="/jadwal" class="btn btn-outline-light btn-lg fw-bold">Lihat Jadwal</a>
+    </div>
+  </section>
+
+ <!-- ✅ Kegiatan Terbaru Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-5 text-success">📅 Kegiatan Terbaru</h2>
+      
+      <% if (typeof kegiatanTerbaru !== 'undefined' && kegiatanTerbaru.length > 0) { %>
+        <div class="row g-4">
+          <% kegiatanTerbaru.forEach(function(k) { %>
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm kegiatan-card">
+                <% if (k.foto) { %>
+                  <img src="/uploads/kegiatan/foto/<%= k.foto %>" class="card-img-top" style="height: 200px; object-fit: cover;" alt="<%= k.nama_kegiatan %>">
+                <% } else { %>
+                  <div class="bg-success text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="bi bi-calendar-event display-4"></i>
+                  </div>
+                <% } %>
+                <div class="card-body">
+                  <span class="badge bg-info text-dark mb-2"><%= k.jenis %></span>
+                  <h5 class="card-title fw-bold"><%= k.nama_kegiatan %></h5>
+                  <p class="card-text text-muted small mb-2">
+                    <i class="bi bi-calendar3 me-1"></i> <%= new Date(k.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %><br>
+                    <i class="bi bi-geo-alt me-1"></i> <%= k.lokasi %>
+                  </p>
+                  <a href="/kegiatan/detail/<%= k.id_kegiatan %>" class="btn btn-outline-success btn-sm">
+                    Selengkapnya →
+                  </a>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        
+        <!-- Tombol Lihat Semua Kegiatan -->
+        <div class="text-center mt-5">
+          <a href="/kegiatan" class="btn btn-success btn-lg">
+            <i class="bi bi-calendar-check me-2"></i>Lihat Semua Kegiatan
+          </a>
+        </div>
+      <% } else { %>
+        <div class="text-center py-5">
+          <i class="bi bi-calendar-x display-1 text-muted"></i>
+          <h5 class="mt-3 text-muted">Belum Ada Kegiatan</h5>
+          <p class="text-muted">Kegiatan akan segera ditampilkan</p>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3">
+    <small>© <%= new Date().getFullYear() %> UKM Taekwondo UPN Veteran Jakarta</small>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

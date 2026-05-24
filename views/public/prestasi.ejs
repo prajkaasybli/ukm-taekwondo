@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prestasi - TAVEJA</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    .prestasi-card {
+      transition: transform 0.3s;
+    }
+    .prestasi-card:hover {
+      transform: translateY(-5px);
+    }
+    .prestasi-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- ✅ NAVBAR DENGAN MENU SUBMIT PRESTASI -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+      <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+        <img src="/uploads/logo-taveja.png" alt="Logo TAVEJA" height="40" class="me-2"> 
+        TAVEJA
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/anggota">Anggota</a></li>
+          <li class="nav-item"><a class="nav-link" href="/jadwal">Jadwal</a></li>
+          <li class="nav-item"><a class="nav-link" href="/kegiatan">Kegiatan</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/prestasi">Prestasi</a></li>
+          
+          <!-- ✅ MENU KHUSUS ANGGOTA: SUBMIT PRESTASI -->
+          <% if (typeof user !== 'undefined' && user.isLoggedIn) { %>
+            <li class="nav-item">
+              <a class="nav-link fw-bold text-warning" href="/prestasi/submit">
+                <i class="bi bi-plus-circle"></i> Submit Prestasi
+              </a>
+            </li>
+          <% } %>
+          
+          <!-- MENU ANGGOTA (Login/Logout) -->
+          <li class="nav-item ms-2">
+            <% if (typeof user !== 'undefined' && user.isLoggedIn) { %>
+              <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle btn-sm" type="button" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-circle me-1"></i><%= user.anggotaNama %>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="/prestasi/my-submissions">
+                    <i class="bi bi-list-ul me-2"></i>Riwayat Prestasi Saya
+                  </a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-danger" href="/anggota/logout">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                  </a></li>
+                </ul>
+              </div>
+            <% } else { %>
+              <a href="/anggota/login" class="btn btn-light text-success btn-sm fw-bold">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login Anggota
+              </a>
+            <% } %>
+          </li>
+          
+          <!-- Login Admin -->
+          <li class="nav-item ms-2">
+            <a href="/admin/login" class="btn btn-outline-light btn-sm">Login Admin</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-bold text-success">🏆 Hall of Fame</h2>
+      <p class="lead text-muted">Prestasi gemilang atlet UKM Taekwondo UPNVJ</p>
+      <% if (typeof totalPrestasi !== 'undefined') { %>
+        <span class="badge bg-success fs-6">Total: <%= totalPrestasi %> Prestasi</span>
+      <% } %>
+    </div>
+
+    <% if (typeof prestasiByYear !== 'undefined' && Object.keys(prestasiByYear).length > 0) { %>
+      
+      <% Object.keys(prestasiByYear).sort((a, b) => b - a).forEach(function(tahun) { %>
+        <div class="mb-5">
+          <h3 class="fw-bold text-success border-bottom pb-2 mb-4">
+            📅 Tahun <%= tahun %>
+          </h3>
+          
+          <div class="row g-4">
+            <% prestasiByYear[tahun].forEach(function(p) { %>
+              <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 prestasi-card">
+                  
+                  <!-- ✅ FOTO PRESTASI (BUKTI JUARA) -->
+                  <% if (p.foto) { %>
+                    <img src="/uploads/prestasi/<%= p.foto %>" class="prestasi-img" alt="<%= p.nama_kejuaraan %>" onerror="this.style.display='none'">
+                  <% } else { %>
+                    <div class="bg-warning text-dark d-flex align-items-center justify-content-center" style="height: 220px;">
+                      <i class="bi bi-trophy display-3"></i>
+                    </div>
+                  <% } %>
+
+                  <div class="card-body">
+                    <!-- Badge Juara & Tingkat -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                      <span class="badge bg-info"><%= p.tingkat %></span>
+                      <span class="badge <%= 
+                        p.juara.includes('1') || p.juara.includes('Gold') ? 'bg-warning text-dark' :
+                        p.juara.includes('2') || p.juara.includes('Silver') ? 'bg-secondary' :
+                        p.juara.includes('3') || p.juara.includes('Bronze') ? 'bg-danger' :
+                        'bg-light text-dark'
+                      %>">
+                        🏆 <%= p.juara %>
+                      </span>
+                    </div>
+
+                    <!-- Nama Kejuaraan -->
+                    <h5 class="fw-bold mb-2"><%= p.nama_kejuaraan %></h5>
+
+                    <!-- ✅ Info Tambahan (SESUAI DATABASE) -->
+                    <p class="card-text text-muted small mb-2">
+                      <i class="bi bi-calendar3 me-1"></i> Tahun <%= p.tahun %><br>
+                      <i class="bi bi-geo-alt me-1"></i> <%= p.tingkat %>
+                    </p>
+
+                    <!-- ✅ DESKRIPSI PRESTASI -->
+                    <% if (p.deskripsi) { %>
+                      <p class="card-text small text-secondary border-top pt-2 mt-2 fst-italic">
+                        "<%= p.deskripsi %>"
+                      </p>
+                    <% } %>
+
+                    <!-- ✅ Data Anggota (gunakan alias anggotaDataPrestasi) -->
+                    <% if (p.anggotaDataPrestasi) { %>
+                      <div class="d-flex align-items-center mt-3 pt-3 border-top">
+                        <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white me-3" 
+                            style="width:45px; height:45px;">
+                            <span class="fw-bold"><%= p.anggotaDataPrestasi.nama.charAt(0).toUpperCase() %></span>
+                        </div>
+                        <div>
+                            <strong class="d-block"><%= p.anggotaDataPrestasi.nama %></strong>
+                            <small class="text-muted">
+                            Sabuk <%= p.anggotaDataPrestasi.sabuk %> 
+                            <% if (p.anggotaDataPrestasi.angkatan) { %> | <%= p.anggotaDataPrestasi.angkatan %><% } %>
+                            </small>
+                        </div>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% }) %>
+
+    <% } else { %>
+      <div class="text-center py-5">
+        <i class="bi bi-trophy display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">Belum Ada Prestasi</h4>
+        <p class="text-muted">Prestasi akan segera ditampilkan setelah ditambahkan oleh admin</p>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <small>© <%= new Date().getFullYear() %> UKM Taekwondo UPN Veteran Jakarta</small>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

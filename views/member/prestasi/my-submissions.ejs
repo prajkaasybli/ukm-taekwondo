@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Riwayat Submit - Member</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-success mb-4">
+    <div class="container">
+      <span class="navbar-brand">Area Anggota</span>
+      <a href="/anggota/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h3 class="mb-4">📋 Riwayat Submit Prestasi</h3>
+    
+    <% if (typeof submissions !== 'undefined' && submissions.length > 0) { %>
+      <div class="list-group">
+        <% submissions.forEach(function(p) { %>
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-1"><%= p.nama_kejuaraan %></h6>
+              <small class="text-muted"><%= p.juara %> | <%= p.tingkat %> (<%= p.tahun %>)</small>
+            </div>
+            <span class="badge <%= 
+              p.status === 'approved' ? 'bg-success' : 
+              p.status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark' 
+            %>">
+              <%= p.status === 'approved' ? '✅ Disetujui' : 
+                  p.status === 'rejected' ? '❌ Ditolak' : '⏳ Pending' %>
+            </span>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p class="text-muted">Belum ada prestasi yang disubmit.</p>
+    <% } %>
+    
+    <a href="/prestasi/submit" class="btn btn-success mt-3">+ Submit Prestasi Baru</a>
+  </div>
+</body>
+</html>

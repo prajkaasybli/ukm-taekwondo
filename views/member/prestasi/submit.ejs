@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Prestasi - TAVEJA</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
+    }
+    .submit-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #333;
+    }
+    .btn-submit {
+      padding: 10px 30px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ NAVBAR PARTIAL (Otomatis menyesuaikan login status) -->
+  <%- include('../../partials/navbar') %>
+
+  <!-- Konten Utama -->
+  <div class="container py-5">
+    <div class="submit-card">
+      
+      <div class="text-center mb-4">
+        <i class="bi bi-trophy-fill text-success fs-1"></i>
+        <h3 class="fw-bold mt-2">Submit Prestasi Baru</h3>
+        <p class="text-muted small">Bagikan pencapaianmu kepada komunitas TAVEJA</p>
+      </div>
+      
+      <!-- Flash Messages -->
+      <% if (typeof error_msg !== 'undefined' && error_msg) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="bi bi-exclamation-triangle me-2"></i><%= error_msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% } %>
+      
+      <% if (typeof success_msg !== 'undefined' && success_msg) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle me-2"></i><%= success_msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% } %>
+      
+      <!-- Info Box -->
+      <div class="alert alert-info small mb-4">
+        <i class="bi bi-info-circle me-2"></i> 
+        <strong>Catatan:</strong> Prestasi yang Anda submit akan muncul di halaman publik setelah disetujui oleh admin.
+      </div>
+
+      <!-- Form Submit -->
+      <form action="/prestasi/submit" method="POST" enctype="multipart/form-data">
+        
+        <!-- Nama Kejuaraan -->
+        <div class="mb-3">
+          <label class="form-label">Nama Kejuaraan / Turnamen</label>
+          <input type="text" name="nama_kejuaraan" class="form-control" 
+                 placeholder="Contoh: Kejuaraan Daerah DKI Jakarta 2024" required>
+        </div>
+
+        <!-- Tingkat & Tahun -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Tingkat Kompetisi</label>
+            <select name="tingkat" class="form-select" required>
+              <option value="">-- Pilih Tingkat --</option>
+              <option value="Kota">Kota / Kabupaten</option>
+              <option value="Provinsi">Provinsi</option>
+              <option value="Regional">Regional / Wilayah</option>
+              <option value="Nasional">Nasional</option>
+              <option value="Internasional">Internasional</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Tahun</label>
+            <input type="number" name="tahun" class="form-control" 
+                   value="<%= new Date().getFullYear() %>" 
+                   min="2020" max="2030" required>
+          </div>
+        </div>
+
+        <!-- Perolehan Juara -->
+        <div class="mb-3">
+          <label class="form-label">Perolehan Juara</label>
+          <select name="juara" class="form-select" required>
+            <option value="">-- Pilih Peringkat --</option>
+            <option value="Juara 1">Juara 1 🥇</option>
+            <option value="Juara 2">Juara 2 🥈</option>
+            <option value="Juara 3">Juara 3 🥉</option>
+            <option value="Harapan 1">Harapan 1</option>
+            <option value="Harapan 2">Harapan 2</option>
+            <option value="Harapan 3">Harapan 3</option>
+            <option value="Finalis">Finalis</option>
+          </select>
+        </div>
+
+        <!-- Deskripsi -->
+        <div class="mb-3">
+          <label class="form-label">Deskripsi Pencapaian (Opsional)</label>
+          <textarea name="deskripsi" class="form-control" rows="3" 
+                    placeholder="Ceritakan sedikit tentang pencapaian ini..."></textarea>
+          <small class="text-muted">Contoh: "Berhasil mengalahkan 10 peserta dari berbagai universitas"</small>
+        </div>
+
+        <!-- Upload Foto -->
+        <div class="mb-4">
+          <label class="form-label">Foto Bukti 📸</label>
+          <input type="file" name="foto" class="form-control" accept="image/*" required>
+          <small class="text-muted">
+            <i class="bi bi-info-circle"></i> Format: JPG/PNG, Maksimal 5MB. 
+            Foto harus menunjukkan Anda memegang medali/piala.
+          </small>
+          
+          <!-- Preview Foto (JavaScript) -->
+          <div id="fotoPreview" class="mt-2 d-none">
+            <small class="text-success fw-bold">✓ Foto dipilih:</small>
+            <img id="previewImg" src="#" alt="Preview" class="img-fluid rounded mt-1" style="max-height: 150px;">
+          </div>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-success btn-submit">
+            <i class="bi bi-cloud-upload me-2"></i>Submit untuk Persetujuan
+          </button>
+        </div>
+        
+      </form>
+
+      <!-- Link Tambahan -->
+      <div class="text-center mt-4 pt-3 border-top">
+        <a href="/prestasi/my-submissions" class="text-decoration-none text-muted small">
+          <i class="bi bi-list-ul me-1"></i>Lihat Riwayat Submit Saya
+        </a>
+        <span class="text-muted mx-2">|</span>
+        <a href="/prestasi" class="text-decoration-none text-muted small">
+          <i class="bi bi-arrow-left me-1"></i>Kembali ke Halaman Prestasi
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ✅ FOOTER PARTIAL -->
+  <%- include('../../partials/footer') %>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script Preview Foto -->
+  <script>
+    document.querySelector('input[name="foto"]').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('previewImg').src = e.target.result;
+          document.getElementById('fotoPreview').classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>

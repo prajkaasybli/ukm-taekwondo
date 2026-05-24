@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Kegiatan - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-success mb-4">
+    <div class="container-fluid">
+      <span class="navbar-brand">UKM Taekwondo Admin</span>
+      <a href="/admin/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">✏️ Edit Kegiatan</h4>
+          </div>
+          <div class="card-body p-4">
+            <% if (typeof error_msg !== 'undefined' && error_msg) { %>
+              <div class="alert alert-danger"><%= error_msg %></div>
+            <% } %>
+
+            <form action="/kegiatan/admin/edit" method="POST" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Nama Kegiatan</label>
+                <input type="text" name="nama_kegiatan" class="form-control" value="<%= kegiatan.nama_kegiatan %>" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Jenis Kegiatan</label>
+                <select name="jenis" class="form-select" required>
+                  <% const jenisList = ['Latihan Rutin','Kompetisi','Seminar','Sosial','Internal']; %>
+                  <% jenisList.forEach(j => { %>
+                    <option value="<%= j %>" <%= kegiatan.jenis === j ? 'selected' : '' %>><%= j %></option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Tanggal</label>
+                <input type="date" name="tanggal" class="form-control" value="<%= new Date(kegiatan.tanggal).toISOString().split('T')[0] %>" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Lokasi</label>
+                <input type="text" name="lokasi" class="form-control" value="<%= kegiatan.lokasi %>" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Deskripsi</label>
+                <textarea name="deskripsi" class="form-control" rows="4"><%= kegiatan.deskripsi || '' %></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Foto Kegiatan</label>
+                <% if (kegiatan.foto) { %>
+                  <div class="mb-2">
+                    <img src="/uploads/kegiatan/foto/<%= kegiatan.foto %>" class="rounded" width="100">
+                    <small class="d-block text-muted">Foto saat ini</small>
+                  </div>
+                <% } %>
+                <input type="file" name="foto" class="form-control" accept="image/*">
+                <small class="text-muted">Kosongkan jika tidak ingin mengganti foto</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">File Penjelasan</label>
+                <% if (kegiatan.file_penjelasan) { %>
+                  <div class="mb-2">
+                    <a href="/uploads/kegiatan/file/<%= kegiatan.file_penjelasan %>" class="btn btn-sm btn-outline-primary" target="_blank">
+                      📄 Lihat File Saat Ini
+                    </a>
+                  </div>
+                <% } %>
+                <input type="file" name="file_penjelasan" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                <small class="text-muted">Kosongkan jika tidak ingin mengganti file</small>
+              </div>
+
+              <hr class="my-4">
+              <h5 class="mb-3">📝 Pengaturan Pendaftaran</h5>
+              
+              <div class="mb-3 form-check">
+                <input type="checkbox" name="ada_pendaftaran" class="form-check-input" id="ada_pendaftaran" 
+                  <%= kegiatan.ada_pendaftaran ? 'checked' : '' %> onchange="togglePendaftaran()">
+                <label class="form-check-label" for="ada_pendaftaran">Aktifkan Pendaftaran untuk kegiatan ini</label>
+              </div>
+
+              <div class="mb-3" id="link_pendaftaran_group" style="display: <%= kegiatan.ada_pendaftaran ? 'block' : 'none' %>;">
+                <label class="form-label fw-bold">Link Pendaftaran (Google Form/Drive)</label>
+                <input type="url" name="link_pendaftaran" class="form-control" 
+                  value="<%= kegiatan.link_pendaftaran || '' %>" 
+                  placeholder="https://docs.google.com/forms/...">
+              </div>
+
+              <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-warning px-4">🔄 Update Kegiatan</button>
+                <a href="/kegiatan/admin" class="btn btn-secondary">↩️ Batal</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePendaftaran() {
+      const checkbox = document.getElementById('ada_pendaftaran');
+      const linkGroup = document.getElementById('link_pendaftaran_group');
+      linkGroup.style.display = checkbox.checked ? 'block' : 'none';
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

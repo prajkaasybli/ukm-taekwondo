@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kelola Anggota - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1055;
+    }
+    .toast {
+      min-width: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+  <!-- ✅ TOAST NOTIFICATION CONTAINER (FIXED) -->
+<div class="toast-container">
+  <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+    <div class="toast align-items-center text-bg-success border-0 show" role="alert" data-bs-delay="5000">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="bi bi-check-circle me-2"></i><%= success_msg[0] %>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  <% } %>
+  <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+    <div class="toast align-items-center text-bg-danger border-0 show" role="alert" data-bs-delay="5000">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="bi bi-exclamation-triangle me-2"></i><%= error_msg[0] %>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+  <nav class="navbar navbar-dark bg-success mb-4">
+    <div class="container">
+      <span class="navbar-brand">UKM Taekwondo Admin</span>
+      <a href="/admin/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex align-items-center gap-3">
+        <a href="/admin/dashboard" class="btn btn-secondary btn-sm">
+          <i class="bi bi-arrow-left"></i> Kembali
+        </a>
+        <h3 class="mb-0">Kelola Anggota</h3>
+      </div>
+      <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
+        <i class="bi bi-plus-circle"></i> Tambah Anggota
+      </button>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle">
+            <thead class="table-success">
+              <tr>
+                <th>No</th><th>Nama</th><th>NIM</th><th>Jurusan</th><th>Angkatan</th><th>Sabuk</th><th>Status</th><th class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (typeof anggota !== 'undefined' && anggota.length > 0) { %>
+                <% anggota.forEach(function(a, i) { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= a.nama %></td>
+                  <td><%= a.nim %></td>
+                  <td><%= a.jurusan %></td>
+                  <td><%= a.angkatan %></td>
+                  <td><span class="badge bg-warning text-dark"><%= a.sabuk %></span></td>
+                  <td><span class="badge <%= a.status === 'Aktif' ? 'bg-success' : 'bg-secondary' %>"><%= a.status %></span></td>
+                  <td class="text-center">
+                    <div class="btn-group">
+                      <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEdit<%= a.id_anggota %>">
+                        <i class="bi bi-pencil"></i> Edit
+                      </button>
+                      <a href="/anggota/admin/hapus/<%= a.id_anggota %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">
+                        <i class="bi bi-trash"></i> Hapus
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Modal Edit -->
+                <div class="modal fade" id="modalEdit<%= a.id_anggota %>" tabindex="-1">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form action="/anggota/admin/edit/<%= a.id_anggota %>" method="POST">
+                        <div class="modal-header"><h5 class="modal-title">Edit Anggota</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                        <div class="modal-body">
+                          <div class="mb-2"><label class="form-label">Nama</label><input type="text" name="nama" class="form-control" value="<%= a.nama %>" required></div>
+                          <div class="mb-2"><label class="form-label">NIM</label><input type="text" name="nim" class="form-control" value="<%= a.nim %>" readonly></div>
+                          <div class="mb-2"><label class="form-label">Jurusan</label><input type="text" name="jurusan" class="form-control" value="<%= a.jurusan %>" required></div>
+                          <div class="mb-2"><label class="form-label">Angkatan</label><input type="text" name="angkatan" class="form-control" value="<%= a.angkatan %>" required></div>
+                          <div class="mb-2"><label class="form-label">Sabuk</label>
+                            <select name="sabuk" class="form-select">
+                              <option value="Putih" <%= a.sabuk === 'Putih' ? 'selected' : '' %>>Putih</option>
+                              <option value="Kuning" <%= a.sabuk === 'Kuning' ? 'selected' : '' %>>Kuning</option>
+                              <option value="Kuning Strip" <%= a.sabuk === 'Kuning Strip' ? 'selected' : '' %>>Kuning Strip</option>
+                              <option value="Hijau" <%= a.sabuk === 'Hijau' ? 'selected' : '' %>>Hijau</option>
+                              <option value="Hijau Strip" <%= a.sabuk === 'Hijau Strip' ? 'selected' : '' %>>Hijau Strip</option>
+                              <option value="Biru" <%= a.sabuk === 'Biru' ? 'selected' : '' %>>Biru</option>
+                              <option value="Biru Strip" <%= a.sabuk === 'Biru Strip' ? 'selected' : '' %>>Biru Strip</option>
+                              <option value="Merah" <%= a.sabuk === 'Merah' ? 'selected' : '' %>>Merah</option>
+                              <option value="Merah Strip 1" <%= a.sabuk === 'Merah Strip 1' ? 'selected' : '' %>>Merah Strip 1</option>
+                              <option value="Merah Strip 2" <%= a.sabuk === 'Merah Strip 2' ? 'selected' : '' %>>Merah Strip 2</option>
+                              <option value="Hitam dan 1" <%= a.sabuk === 'Hitam dan 1' ? 'selected' : '' %>>Hitam dan 1</option>
+                              <option value="Hitam dan 2" <%= a.sabuk === 'Hitam dan 2' ? 'selected' : '' %>>Hitam dan 2</option>
+                            </select>
+                          </div>
+                          <div class="mb-2"><label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                              <option value="Aktif" <%= a.status === 'Aktif' ? 'selected' : '' %>>Aktif</option>
+                              <option value="Nonaktif" <%= a.status === 'Nonaktif' ? 'selected' : '' %>>Nonaktif</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary">Simpan</button></div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+              <% } else { %>
+                <tr><td colspan="8" class="text-center py-4">Belum ada data anggota.</td></tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah -->
+  <div class="modal fade" id="modalTambah" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="/anggota/admin/tambah" method="POST">
+          <div class="modal-header"><h5 class="modal-title">Tambah Anggota</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <div class="mb-2"><label class="form-label">Nama</label><input type="text" name="nama" class="form-control" required></div>
+            <div class="mb-2"><label class="form-label">NIM</label><input type="text" name="nim" class="form-control" required></div>
+            <div class="mb-2"><label class="form-label">Jurusan</label>
+              <select name="jurusan" class="form-select" required>
+                <option value="">-- Pilih Jurusan --</option>
+                <option value="D3 Sistem Informasi">D3 Sistem Informasi</option>
+                <option value="D3 Akuntansi">D3 Akuntansi</option>
+                <option value="D3 Perbankan & Keuangan">D3 Perbankan & Keuangan</option>
+                <option value="D3 Keperawatan">D3 Keperawatan</option>
+                <option value="S1 Informatika">S1 Informatika</option>
+                <option value="S1 Sistem Informasi">S1 Sistem Informasi</option>
+                <option value="S1 Manajemen">S1 Manajemen</option>
+                <option value="S1 Akuntansi">S1 Akuntansi</option>
+                <option value="S1 Ekonomi Pembangunan">S1 Ekonomi Pembangunan</option>
+                <option value="S1 Ekonomi Syariah">S1 Ekonomi Syariah</option>
+                <option value="S1 Ilmu Komunikasi">S1 Ilmu Komunikasi</option>
+                <option value="S1 Hubungan Internasional">S1 Hubungan Internasional</option>
+                <option value="S1 Ilmu Politik">S1 Ilmu Politik</option>
+                <option value="S1 Ilmu Hukum">S1 Ilmu Hukum</option>
+                <option value="S1 Teknik Mesin">S1 Teknik Mesin</option>
+                <option value="S1 Teknik Industri">S1 Teknik Industri</option>
+                <option value="S1 Teknik Perkapalan">S1 Teknik Perkapalan</option>
+                <option value="S1 Teknik Elektro">S1 Teknik Elektro</option>
+                <option value="S1 Keperawatan">S1 Keperawatan</option>
+                <option value="S1 Kesehatan Masyarakat">S1 Kesehatan Masyarakat</option>
+                <option value="S1 Gizi">S1 Gizi</option>
+                <option value="S1 Fisioterapi">S1 Fisioterapi</option>
+                <option value="S1 Kedokteran">S1 Kedokteran</option>
+                <option value="S1 Farmasi">S1 Farmasi</option>
+              </select>
+            </div>
+            <div class="mb-2"><label class="form-label">Angkatan</label><input type="text" name="angkatan" class="form-control" placeholder="2024" required></div>
+            <div class="mb-2"><label class="form-label">Sabuk</label>
+              <select name="sabuk" class="form-select">
+                <option value="Putih">Putih</option>
+                <option value="Kuning">Kuning</option>
+                <option value="Kuning Strip">Kuning Strip</option>
+                <option value="Hijau">Hijau</option>
+                <option value="Hijau Strip">Hijau Strip</option>
+                <option value="Biru">Biru</option>
+                <option value="Biru Strip">Biru Strip</option>
+                <option value="Merah">Merah</option>
+                <option value="Merah Strip 1">Merah Strip 1</option>
+                <option value="Merah Strip 2">Merah Strip 2</option>
+                <option value="Hitam dan 1">Hitam dan 1</option>
+                <option value="Hitam dan 2">Hitam dan 2</option>
+              </select>
+            </div>
+            <div class="mb-2"><label class="form-label">Status</label>
+              <select name="status" class="form-select">
+                <option value="Aktif">Aktif</option>
+                <option value="Nonaktif">Nonaktif</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary">Simpan</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+      toastElList.map(function(toastEl) { return new bootstrap.Toast(toastEl, { delay: 5000 }).show(); });
+    });
+  </script>
+</body>
+</html>

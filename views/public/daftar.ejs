@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pendaftaran Anggota - UKM Taekwondo UPNVJ</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+            <!-- Placeholder untuk logo -->
+            <img src="/uploads/logo-taveja.png" alt="Logo" height="40" class="me-2"> 
+            TAVEJA
+        </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/login">Login Admin</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow border-0">
+          <div class="card-body p-4">
+            <h3 class="fw-bold mb-4 text-center">📝 Pendaftaran Anggota Baru</h3>
+            
+            <% if (typeof success_msg !== 'undefined' && success_msg) { %>
+              <div class="alert alert-success"><%= success_msg %></div>
+            <% } %>
+            <% if (typeof error_msg !== 'undefined' && error_msg) { %>
+              <div class="alert alert-danger"><%= error_msg %></div>
+            <% } %>
+
+            <form action="/daftar/submit" method="POST">
+              <div class="mb-3">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" name="nama" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">NIM</label>
+                <input type="text" name="nim" class="form-control" required>
+              </div>
+              <!-- ✅ DROPDOWN JURUSAN UPNVJ LENGKAP -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Program Studi / Jurusan</label>
+                <select name="jurusan" class="form-select" required>
+                  <option value="">-- Pilih Program Studi --</option>
+                  
+                  <!-- 💻 FAKULTAS ILMU KOMPUTER -->
+                  <optgroup label="💻 Fakultas Ilmu Komputer">
+                    <option value="D3 Sistem Informasi">D3 Sistem Informasi</option>
+                    <option value="S1 Informatika">S1 Informatika</option>
+                    <option value="S1 Sistem Informasi">S1 Sistem Informasi</option>
+                  </optgroup>
+                  
+                  <!-- 💰 FAKULTAS EKONOMI & BISNIS -->
+                  <optgroup label="💰 Fakultas Ekonomi & Bisnis">
+                    <option value="D3 Akuntansi">D3 Akuntansi</option>
+                    <option value="D3 Perbankan & Keuangan">D3 Perbankan & Keuangan</option>
+                    <option value="S1 Manajemen">S1 Manajemen</option>
+                    <option value="S1 Akuntansi">S1 Akuntansi</option>
+                    <option value="S1 Ekonomi Pembangunan">S1 Ekonomi Pembangunan</option>
+                    <option value="S1 Ekonomi Syariah">S1 Ekonomi Syariah</option>
+                  </optgroup>
+                  
+                  <!-- 🌍 FAKULTAS ILMU SOSIAL & POLITIK -->
+                  <optgroup label="🌍 Fakultas Ilmu Sosial & Politik">
+                    <option value="S1 Ilmu Komunikasi">S1 Ilmu Komunikasi</option>
+                    <option value="S1 Hubungan Internasional">S1 Hubungan Internasional</option>
+                    <option value="S1 Ilmu Politik">S1 Ilmu Politik</option>
+                  </optgroup>
+                  
+                  <!-- ⚖️ FAKULTAS HUKUM -->
+                  <optgroup label="⚖️ Fakultas Hukum">
+                    <option value="S1 Ilmu Hukum">S1 Ilmu Hukum</option>
+                  </optgroup>
+                  
+                  <!-- ⚙️ FAKULTAS TEKNIK -->
+                  <optgroup label="⚙️ Fakultas Teknik">
+                    <option value="S1 Teknik Mesin">S1 Teknik Mesin</option>
+                    <option value="S1 Teknik Industri">S1 Teknik Industri</option>
+                    <option value="S1 Teknik Perkapalan">S1 Teknik Perkapalan</option>
+                    <option value="S1 Teknik Elektro">S1 Teknik Elektro</option>
+                  </optgroup>
+                  
+                  <!-- 🏥 FAKULTAS ILMU KESEHATAN -->
+                  <optgroup label="🏥 Fakultas Ilmu Kesehatan">
+                    <option value="D3 Keperawatan">D3 Keperawatan</option>
+                    <option value="S1 Keperawatan">S1 Keperawatan</option>
+                    <option value="S1 Kesehatan Masyarakat">S1 Kesehatan Masyarakat</option>
+                    <option value="S1 Gizi">S1 Gizi</option>
+                    <option value="S1 Fisioterapi">S1 Fisioterapi</option>
+                  </optgroup>
+                  
+                  <!-- 🩺 FAKULTAS KEDOKTERAN -->
+                  <optgroup label="🩺 Fakultas Kedokteran">
+                    <option value="S1 Kedokteran">S1 Kedokteran</option>
+                    <option value="S1 Farmasi">S1 Farmasi</option>
+                  </optgroup>
+                </select>
+                <small class="text-muted">Pilih program studi sesuai dengan yang kamu tempuh</small>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Angkatan</label>
+                <input type="text" name="angkatan" class="form-control" placeholder="Contoh: 2024" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Sabuk Saat Ini</label>
+                <select name="sabuk" class="form-select">
+                  <option value="Belum Ada">Belum Ada</option>
+                  <option value="Putih">Putih</option>
+                  <option value="Kuning">Kuning</option>
+                  <option value="Kuning Strip">Kuning Strip</option>
+                  <option value="Hijau">Hijau</option>
+                  <option value="Hijau Strip">Hijau Strip</option>
+                  <option value="Biru">Biru</option>
+                  <option value="Biru Strip">Biru Strip</option>
+                  <option value="Merah">Merah</option>
+                  <option value="Merah Strip 1">Merah Strip 1</option>
+                  <option value="Merah Strip 2">Merah Strip 2</option>
+                  <option value="Hitam dan 1">Hitam dan 1</option>
+                  <option value="Hitam dan 2">Hitam dan 2</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">No. HP / WhatsApp</label>
+                <input type="text" name="no_hp" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Daftar Sekarang</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <small>© <%= new Date().getFullYear() %> UKM Taekwondo UPN Veteran Jakarta</small>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Prestasi - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-success mb-4">
+    <div class="container-fluid">
+      <span class="navbar-brand">UKM Taekwondo Admin</span>
+      <a href="/admin/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h3 class="mb-4">✏️ Edit Prestasi</h3>
+    
+    <% if (typeof error_msg !== 'undefined' && error_msg) { %>
+      <div class="alert alert-danger"><%= error_msg %></div>
+    <% } %>
+    
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form action="/prestasi/admin/edit/<%= prestasi.id_prestasi %>" 
+              method="POST" 
+              enctype="multipart/form-data">
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nama Kejuaraan</label>
+            <input type="text" name="nama_kejuaraan" class="form-control" 
+                   value="<%= prestasi.nama_kejuaraan %>" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nama Anggota/Peserta</label>
+            <select name="id_anggota" class="form-select" required>
+              <option value="">-- Pilih Anggota --</option>
+              <% if (typeof anggotaList !== 'undefined' && anggotaList.length > 0) { %>
+                <% anggotaList.forEach(function(a) { %>
+                  <option value="<%= a.id_anggota %>" 
+                          <%= a.id_anggota === prestasi.id_anggota ? 'selected' : '' %>>
+                    <%= a.nama %> - <%= a.nim %> (<%= a.jurusan %>)
+                  </option>
+                <% }) %>
+              <% } %>
+            </select>
+            <small class="text-muted">Pilih anggota yang meraih prestasi ini</small>
+          </div>
+        
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">Tingkat</label>
+              <select name="tingkat" class="form-select" required>
+                <option value="Kota" <%= prestasi.tingkat === 'Kota' ? 'selected' : '' %>>Kota</option>
+                <option value="Provinsi" <%= prestasi.tingkat === 'Provinsi' ? 'selected' : '' %>>Provinsi</option>
+                <option value="Regional" <%= prestasi.tingkat === 'Regional' ? 'selected' : '' %>>Regional</option>
+                <option value="Nasional" <%= prestasi.tingkat === 'Nasional' ? 'selected' : '' %>>Nasional</option>
+                <option value="Internasional" <%= prestasi.tingkat === 'Internasional' ? 'selected' : '' %>>Internasional</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">Tahun</label>
+              <input type="number" name="tahun" class="form-control" 
+                     value="<%= prestasi.tahun %>" required>
+            </div>
+          </div>
+        
+          <div class="mb-3">
+            <label class="form-label fw-bold">Perolehan Juara</label>
+            <select name="juara" class="form-select" required>
+              <option value="Juara 1" <%= prestasi.juara === 'Juara 1' ? 'selected' : '' %>>Juara 1 🥇</option>
+              <option value="Juara 2" <%= prestasi.juara === 'Juara 2' ? 'selected' : '' %>>Juara 2 🥈</option>
+              <option value="Juara 3" <%= prestasi.juara === 'Juara 3' ? 'selected' : '' %>>Juara 3 🥉</option>
+              <option value="Harapan 1" <%= prestasi.juara === 'Harapan 1' ? 'selected' : '' %>>Harapan 1</option>
+              <option value="Harapan 2" <%= prestasi.juara === 'Harapan 2' ? 'selected' : '' %>>Harapan 2</option>
+              <option value="Harapan 3" <%= prestasi.juara === 'Harapan 3' ? 'selected' : '' %>>Harapan 3</option>
+            </select>
+          </div>
+        
+          <div class="mb-3">
+            <label class="form-label fw-bold">Deskripsi</label>
+            <textarea name="deskripsi" class="form-control" rows="3"><%= prestasi.deskripsi || '' %></textarea>
+          </div>
+        
+          <div class="mb-3">
+            <label class="form-label fw-bold">Foto Juara</label>
+            <% if (prestasi.foto) { %>
+              <div class="mb-2">
+                <img src="/uploads/prestasi/<%= prestasi.foto %>" class="rounded" width="150">
+                <small class="d-block text-muted">Foto saat ini</small>
+              </div>
+            <% } %>
+            <input type="file" name="foto" class="form-control" accept="image/*">
+            <small class="text-muted">Kosongkan jika tidak ingin mengganti foto</small>
+          </div>
+        
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-success px-4">💾 Update Prestasi</button>
+            <a href="/prestasi/admin" class="btn btn-secondary">↩️ Batal</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

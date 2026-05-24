@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-success mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">UKM Taekwondo Admin</span>
+            <a href="/admin/logout" class="btn btn-outline-light btn-sm">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4">Dashboard</h2>
+        
+
+        <div class="row">
+            <!-- Card Anggota -->
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3 card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Anggota</h5>
+                        <p class="card-text display-4"><%= typeof jumlahAnggota !== 'undefined' ? jumlahAnggota : 0 %></p>
+                        <a href="/anggota/admin" class="btn btn-light btn-sm">Lihat Data</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Jadwal -->
+            <div class="col-md-4">
+                <div class="card text-white bg-info mb-3 card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title">Jadwal Latihan</h5>
+                        <p class="card-text display-4"><%= typeof jumlahJadwal !== 'undefined' ? jumlahJadwal : 0 %></p>
+                        <a href="/jadwal/admin" class="btn btn-light btn-sm">Kelola Jadwal</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Prestasi -->
+            <div class="col-md-4">
+                <div class="card text-white bg-warning mb-3 card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title">Prestasi</h5>
+                        <p class="card-text display-4"><%= typeof jumlahPrestasi !== 'undefined' ? jumlahPrestasi : 0 %></p>
+                        <a href="/prestasi/admin" class="btn btn-light btn-sm">Kelola Prestasi</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Tambahan -->
+        <div class="row mt-3">
+            <!-- Card Kegiatan -->
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Kegiatan</h5>
+                        <a href="/kegiatan/admin" class="btn btn-light btn-sm">Kelola Kegiatan</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Pendaftaran -->
+            <div class="col-md-4">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Pendaftaran Baru</h5>
+                        <a href="/daftar/admin" class="btn btn-light btn-sm">Verifikasi Pendaftar</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ CARD BARU: Struktur Organisasi -->
+            <div class="col-md-4">
+                <div class="card text-white bg-dark mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">👥 Struktur Organisasi</h5>
+                        <p class="card-text small opacity-75">Kelola foto & jabatan pengurus</p>
+                        <a href="/struktur/admin" class="btn btn-light btn-sm">Kelola Pengurus</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

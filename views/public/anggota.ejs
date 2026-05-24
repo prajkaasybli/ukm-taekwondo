@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direktori Anggota - UKM Taekwondo UPNVJ</title>
+  
+  <!-- ✅ CSS Bootstrap (WAJIB ADA AGAR RAPI) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .anggota-card {
+      transition: transform 0.3s;
+      background: #fff;
+    }
+    .anggota-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    /* ✅ CSS PENGATUR UKURAN FOTO (Biar Tidak Kebesaran) */
+    .anggota-img {
+      width: 120px;      /* Lebar tetap */
+      height: 120px;     /* Tinggi tetap */
+      object-fit: cover; /* Potong gambar agar pas di lingkaran */
+      border-radius: 50%; /* Membuat bulat */
+      border: 4px solid #198754; /* Garis hijau */
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+      <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+        <img src="/uploads/logo-taveja.png" alt="Logo TAVEJA" height="40" class="me-2"> 
+        TAVEJA
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/anggota">Anggota</a></li>
+          <li class="nav-item"><a class="nav-link" href="/jadwal">Jadwal</a></li>
+          <li class="nav-item"><a class="nav-link" href="/kegiatan">Kegiatan</a></li>
+          <li class="nav-item"><a class="nav-link" href="/prestasi">Prestasi</a></li>
+          
+          <!-- MENU ANGGOTA (Login/Logout) -->
+          <li class="nav-item ms-2">
+            <% if (typeof user !== 'undefined' && user.isLoggedIn) { %>
+              <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle btn-sm" type="button" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-circle me-1"></i><%= user.anggotaNama %>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="/kegiatan">Kegiatan</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-danger" href="/anggota/logout">Logout</a></li>
+                </ul>
+              </div>
+            <% } else { %>
+              <a href="/anggota/login" class="btn btn-light text-success btn-sm fw-bold">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login Anggota
+              </a>
+            <% } %>
+          </li>
+          
+          <!-- Login Admin -->
+          <li class="nav-item ms-2">
+            <a href="/admin/login" class="btn btn-outline-light btn-sm">Login Admin</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Konten Utama -->
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-success">👥 Direktori Anggota</h2>
+      <p class="text-muted">Daftar anggota aktif dan pengurus UKM Taekwondo UPNVJ</p>
+    </div>
+
+    <!-- ✅ BAGIAN 1: PENGURUS ORGANISASI (Prioritas Atas) -->
+    <% if (typeof pengurus !== 'undefined' && pengurus.length > 0) { %>
+      <div class="mb-5">
+        <h4 class="fw-bold mb-4 border-bottom pb-2 border-success">
+          <i class="bi bi-shield-check text-success me-2"></i>Pengurus Organisasi
+        </h4>
+        <div class="row g-4 justify-content-center">
+          <% pengurus.forEach(function(a) { %>
+            <div class="col-6 col-md-4 col-lg-3">
+              <div class="card h-100 border-0 shadow-sm anggota-card text-center p-3">
+                <div class="mx-auto mb-3">
+                  <!-- Foto dengan CSS terkontrol -->
+                  <img 
+                    src="/uploads/struktur/<%= a.foto %>" 
+                    class="anggota-img" 
+                    alt="<%= a.nama %>"
+                    onerror="this.onerror=null; this.src='https://via.placeholder.com/120/198754/ffffff?text=<%= a.nama.charAt(0).toUpperCase() %>');"
+                  >
+                </div>
+                
+                <h6 class="fw-bold mb-1 text-dark"><%= a.nama %></h6>
+                <p class="text-muted small mb-2"><%= a.jurusan %> | <%= a.angkatan %></p>
+                
+                <!-- Badge Jabatan -->
+                <span class="badge bg-success mb-2"><%= a.jabatan %></span>
+                
+                <!-- Periode -->
+                <% if (a.periode) { %>
+                  <div class="small text-muted mb-2">Periode <%= a.periode %></div>
+                <% } %>
+                
+                <!-- Sabuk -->
+                <span class="badge bg-warning text-dark"><%= a.sabuk %></span>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- ✅ BAGIAN 2: ANGGOTA BIASA -->
+    <% if (typeof anggotaBiasa !== 'undefined' && anggotaBiasa.length > 0) { %>
+      <div>
+        <h4 class="fw-bold mb-4 border-bottom pb-2 border-secondary">
+          <i class="bi bi-people text-secondary me-2"></i>Anggota
+        </h4>
+        <div class="row g-4">
+          <% anggotaBiasa.forEach(function(a) { %>
+            <div class="col-6 col-md-4 col-lg-3">
+              <div class="card h-100 border-0 shadow-sm anggota-card text-center p-3">
+                <div class="mx-auto mb-3">
+                  <img 
+                    src="/uploads/struktur/<%= a.foto %>" 
+                    class="anggota-img" 
+                    alt="<%= a.nama %>"
+                    onerror="this.onerror=null; this.src='https://via.placeholder.com/120/198754/ffffff?text=<%= a.nama.charAt(0).toUpperCase() %>');"
+                  >
+                </div>
+                
+                <h6 class="fw-bold mb-1 text-dark"><%= a.nama %></h6>
+                <p class="text-muted small mb-2"><%= a.jurusan %> | <%= a.angkatan %></p>
+                
+                <!-- Sabuk -->
+                <span class="badge bg-warning text-dark"><%= a.sabuk %></span>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Jika Kosong -->
+    <% if ((typeof pengurus === 'undefined' || pengurus.length === 0) && 
+           (typeof anggotaBiasa === 'undefined' || anggotaBiasa.length === 0)) { %>
+      <div class="alert alert-info text-center">
+        <i class="bi bi-info-circle me-2"></i>Belum ada data anggota.
+      </div>
+    <% } %>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <small>© <%= new Date().getFullYear() %> UKM Taekwondo UPN Veteran Jakarta</small>
+  </footer>
+
+  <!-- Script Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

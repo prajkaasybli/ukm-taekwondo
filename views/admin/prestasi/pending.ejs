@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Prestasi Pending - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-success mb-4">
+    <div class="container-fluid">
+      <span class="navbar-brand">Admin Panel - Prestasi</span>
+      <a href="/admin/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h3 class="mb-4">⏳ Prestasi Menunggu Persetujuan</h3>
+    
+    <!-- ✅ FLASH MESSAGES -->
+    <% if (typeof success_msg !== 'undefined' && success_msg) { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i><%= success_msg %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    <% } %>
+    <% if (typeof error_msg !== 'undefined' && error_msg) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i><%= error_msg %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    <% } %>
+    
+    <% if (typeof pending !== 'undefined' && pending.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+          <thead class="table-success">
+            <tr>
+              <th>Foto</th>
+              <th>Prestasi</th>
+              <th>Pengaju</th>
+              <th>Tahun</th>
+              <th class="text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% pending.forEach(function(p) { %>
+              <tr>
+                <td>
+                  <% if (p.foto) { %>
+                    <img src="/uploads/prestasi/<%= p.foto %>" width="60" class="rounded" alt="Foto prestasi">
+                  <% } else { %>
+                    <span class="text-muted"><i class="bi bi-image"></i></span>
+                  <% } %>
+                </td>
+                <td>
+                  <strong><%= p.nama_kejuaraan %></strong><br>
+                  <small class="text-muted"><%= p.juara %> - <%= p.tingkat %></small>
+                  <% if (p.deskripsi) { %>
+                    <br><small class="fst-italic">"<%= p.deskripsi %>"</small>
+                  <% } %>
+                </td>
+                <td>
+                  <%= p.anggotaDataPrestasi?.nama || 'N/A' %><br>
+                  <small class="text-muted"><%= p.anggotaDataPrestasi?.nim || '' %></small>
+                </td>
+                <td><%= p.tahun %></td>
+                <td class="text-center">
+                  <div class="d-flex gap-2 justify-content-center">
+                    <form action="/prestasi/admin/approve/<%= p.id_prestasi %>" method="POST" class="d-inline">
+                      <button type="submit" class="btn btn-success btn-sm" 
+                              onclick="return confirm('Setujui prestasi ini dan tampilkan di halaman publik?')">
+                        ✅ Approve
+                      </button>
+                    </form>
+                    <form action="/prestasi/admin/reject/<%= p.id_prestasi %>" method="POST" class="d-inline">
+                      <button type="submit" class="btn btn-danger btn-sm" 
+                              onclick="return confirm('Tolak prestasi ini? Data akan ditandai sebagai rejected.')">
+                        ❌ Reject
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="alert alert-info text-center">
+        <i class="bi bi-check-circle display-4 d-block mb-3"></i>
+        <h5>🎉 Tidak ada prestasi yang menunggu persetujuan</h5>
+        <p class="mb-0 text-muted">Semua prestasi sudah diproses!</p>
+      </div>
+    <% } %>
+    
+    <a href="/prestasi/admin" class="btn btn-secondary mt-3">
+      <i class="bi bi-arrow-left me-1"></i>Kembali ke Kelola

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Tambah Kegiatan - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-success mb-4">
+    <div class="container-fluid">
+      <span class="navbar-brand">UKM Taekwondo Admin</span>
+      <a href="/admin/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h4 class="mb-0">➕ Tambah Kegiatan Baru</h4>
+          </div>
+          <div class="card-body p-4">
+            <% if (typeof error_msg !== 'undefined' && error_msg) { %>
+              <div class="alert alert-danger"><%= error_msg %></div>
+            <% } %>
+
+            <form action="/kegiatan/admin/tambah" method="POST" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Nama Kegiatan</label>
+                <input type="text" name="nama_kegiatan" class="form-control" placeholder="Contoh: Latihan Gabungan Antar UKM" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Jenis Kegiatan</label>
+                <select name="jenis" class="form-select" required>
+                  <option value="">-- Pilih Jenis --</option>
+                  <option value="Latihan Rutin">Latihan Rutin</option>
+                  <option value="Kompetisi">Kompetisi / Kejuaraan</option>
+                  <option value="Seminar">Seminar / Workshop</option>
+                  <option value="Sosial">Kegiatan Sosial</option>
+                  <option value="Internal">Rapat Internal</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Tanggal</label>
+                <input type="date" name="tanggal" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Lokasi</label>
+                <input type="text" name="lokasi" class="form-control" placeholder="Contoh: Gedung Sudirman Lt. 4" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Deskripsi</label>
+                <textarea name="deskripsi" class="form-control" rows="4" placeholder="Jelaskan detail kegiatan..."></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Foto Kegiatan</label>
+                <input type="file" name="foto" class="form-control" accept="image/*">
+                <small class="text-muted">Format: JPG, JPEG, PNG (Max 5MB)</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">File Penjelasan Lengkap</label>
+                <input type="file" name="file_penjelasan" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                <small class="text-muted">Format: PDF, DOC, XLS, PPT (Max 10MB). Opsional.</small>
+              </div>
+
+              <hr class="my-4">
+              <h5 class="mb-3">📝 Pengaturan Pendaftaran</h5>
+              
+              <div class="mb-3 form-check">
+                <input type="checkbox" name="ada_pendaftaran" class="form-check-input" id="ada_pendaftaran" onchange="togglePendaftaran()">
+                <label class="form-check-label" for="ada_pendaftaran">Aktifkan Pendaftaran untuk kegiatan ini</label>
+              </div>
+
+              <div class="mb-3" id="link_pendaftaran_group" style="display: none;">
+                <label class="form-label fw-bold">Link Pendaftaran (Google Form/Drive)</label>
+                <input type="url" name="link_pendaftaran" class="form-control" placeholder="https://docs.google.com/forms/...">
+                <small class="text-muted">Link formulir pendaftaran eksternal</small>
+              </div>
+
+              <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-success px-4">💾 Simpan Kegiatan</button>
+                <a href="/kegiatan/admin" class="btn btn-secondary">↩️ Batal</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePendaftaran() {
+      const checkbox = document.getElementById('ada_pendaftaran');
+      const linkGroup = document.getElementById('link_pendaftaran_group');
+      linkGroup.style.display = checkbox.checked ? 'block' : 'none';
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
