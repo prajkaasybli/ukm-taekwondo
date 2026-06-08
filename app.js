@@ -35,9 +35,10 @@ app.use((req, res, next) => {
 });
 
 // 5. Routes Registration
+app.use('/', require('./routes/authRoutes')); // ✅ ROUTE LOGIN UNIVERSAL
 app.use('/admin', require('./routes/adminRoutes'));
 app.use('/anggota', require('./routes/anggotaRoutes'));
-app.use('/anggota', require('./routes/anggotaAuthRoutes')); // ✅ TAMBAH INI
+// app.use('/anggota', require('./routes/anggotaAuthRoutes')); // ❌ DINONAKTIFKAN - diganti dengan authRoutes
 app.use('/jadwal', require('./routes/jadwalRoutes'));
 app.use('/kegiatan', require('./routes/kegiatanRoutes'));
 app.use('/prestasi', require('./routes/prestasiRoutes'));

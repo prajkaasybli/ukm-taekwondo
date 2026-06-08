@@ -1,4 +1,40 @@
-node_modules
+```
+# Dependencies
+node_modules/
+
+# Environment variables
 .env
-.vscode
+.env.local
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# Build outputs
+dist/
+build/
+target/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# OS generated files
 .DS_Store
+Thumbs.db
+```
